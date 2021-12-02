@@ -86,6 +86,23 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
 
+          // i used this to test the function.
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextButton(
+              onPressed: () {
+                addPoints();
+              },
+              child: const Text(
+                "Testing",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ), // color: Colors.blue,
+            ),
+          ),
+
           // reading other refugee data fields from firestore (database)
           StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             stream: FirebaseFirestore.instance
@@ -110,9 +127,9 @@ class DetailScreen extends StatelessWidget {
                 // where i hopefully, intend to add all points to get totalCampPpoints
                 //..
                 //...
-                
-                
-                //calculate percentage of food to be received by refugee 
+                addPoints();
+
+                //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
 
                 double percent = refPoints / totalCampPoints;
@@ -131,6 +148,19 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
+  Future<double> addPoints() async {
+    final QuerySnapshot result =
+        await FirebaseFirestore.instance.collection("Refugees").get();
+    double total = 0.0;
+    final List<DocumentSnapshot> documents = result.docs;
+    for (var data in documents) {
+      var map = data.data() as Map;
+      total = total + map['Points'];
+    }
+    print(total);
+    return total;
+  }
+
   // function to save refugee details
   void _saveRest() {
     final refugeeAge = _controller.text;
@@ -145,12 +175,12 @@ class DetailScreen extends StatelessWidget {
     } else {
       points += 5;
     }
-     if (double.parse(refugeeWeight) > 45) {
+    if (double.parse(refugeeWeight) > 45) {
       points += 15;
     } else {
       points += 10;
     }
-      if (refugeeGender.toLowerCase().startsWith("f")) {
+    if (refugeeGender.toLowerCase().startsWith("f")) {
       points += 10;
     } else if (refugeeGender.toLowerCase().startsWith("m")) {
       points += 12.5;
@@ -173,7 +203,3 @@ class DetailScreen extends StatelessWidget {
     _controller4.clear();
   }
 }
-
-
-
-
