@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1054814141033",
+    "project_id": "food-distributor-feb54",
+    "storage_bucket": "food-distributor-feb54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054814141033:android:bd38ef510fe73118ecc0f8",
+        "android_client_info": {
+          "package_name": "com.example.food_distributor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054814141033-43r38qh5a63ab512v63nhmac0s6mlkhl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOegZAA8dWtkWKWh6Y6lRjOnkLIbXtOxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054814141033-43r38qh5a63ab512v63nhmac0s6mlkhl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
