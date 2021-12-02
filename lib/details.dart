@@ -100,8 +100,7 @@ class DetailScreen extends StatelessWidget {
                 var refAge = output!['Age'];
                 var refWt = output['weight'];
                 var refGender = output['Gender'];
-                var refContrib = output['Contribution'];
-                // points here are gotte
+                var refContrib = output['Contribution'];              
                 var refPoints = output['Points'];
 
                 //total Points initialized
