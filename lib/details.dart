@@ -86,22 +86,22 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
 
-          // i used this to test the function.
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              onPressed: () {
-                addPoints();
-              },
-              child: const Text(
-                "Testing",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-              ), // color: Colors.blue,
-            ),
-          ),
+          // // i used this to test the function.
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextButton(
+          //     onPressed: () {
+          //       addPoints();
+          //     },
+          //     child: const Text(
+          //       "Testing",
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //     style: TextButton.styleFrom(
+          //       backgroundColor: Colors.blue,
+          //     ), // color: Colors.blue,
+          //   ),
+          // ),
 
           // reading other refugee data fields from firestore (database)
           StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -117,21 +117,22 @@ class DetailScreen extends StatelessWidget {
                 var refAge = output!['Age'];
                 var refWt = output['weight'];
                 var refGender = output['Gender'];
-                var refContrib = output['Contribution'];              
+                var refContrib = output['Contribution'];
                 var refPoints = output['Points'];
 
                 //total Points initialized
-                double totalCampPoints = 0;
+                // double totalCampPoints = 0;
 
                 // where i hopefully, intend to add all points to get totalCampPpoints
-                //..
-                //...
+
                 addPoints();
+
+                var totalCampPoints = addPoints();
 
                 //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
 
-                double percent = refPoints / totalCampPoints;
+                var percent = refPoints / totalCampPoints;
 
                 //displaying read and calculated data
                 return Text(
@@ -147,16 +148,16 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Future<double> addPoints() async {
+  addPoints() async {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection("Refugees").get();
-    double total = 0.0;
+    var total = 0.0;
     final List<DocumentSnapshot> documents = result.docs;
     for (var data in documents) {
       var map = data.data() as Map;
       total = total + map['Points'];
     }
-    print(total);
+    // print(total);
     return total;
   }
 
