@@ -125,9 +125,7 @@ class DetailScreen extends StatelessWidget {
 
                 // where i hopefully, intend to add all points to get totalCampPpoints
 
-                addPoints();
-
-                var totalCampPoints = addPoints();
+                var totalCampPoints = 0;
 
                 //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
@@ -148,18 +146,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  addPoints() async {
-    final QuerySnapshot result =
-        await FirebaseFirestore.instance.collection("Refugees").get();
-    var total = 0.0;
-    final List<DocumentSnapshot> documents = result.docs;
-    for (var data in documents) {
-      var map = data.data() as Map;
-      total = total + map['Points'];
-    }
-    // print(total);
-    return total;
-  }
+  
 
   // function to save refugee details
   void _saveRest() {
