@@ -42,12 +42,10 @@ class RefugeePage extends StatelessWidget {
           Row(children: [
             // text box to enter refugee name
             Expanded(
-              child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration (hintText: "Enter New Name"),
-                )
-            ),
-            
+                child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(hintText: "Enter New Name"),
+            )),
             //to save the name on database (ony name for now)
             TextButton(
               onPressed: () {
@@ -59,14 +57,13 @@ class RefugeePage extends StatelessWidget {
               ),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue,
-                ),// color: Colors.blue,
+              ), // color: Colors.blue,
             )
           ]),
           //show list of saved refugees
           StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("Refugees")
-                .snapshots(),
+            stream:
+                FirebaseFirestore.instance.collection("Refugees").snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return const LinearProgressIndicator();
               return Expanded(
@@ -86,7 +83,6 @@ class RefugeePage extends StatelessWidget {
     FirebaseFirestore.instance.collection("Refugees").add({
       "name": refugeeName,
       // "uid": ,
-    
     });
 
     _controller.clear();
@@ -115,15 +111,17 @@ class RefugeePage extends StatelessWidget {
             child: ListTile(
               title: Text(doc["name"]),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                  //passing refugee name and id along...
-                  builder: (context) => DetailScreen(refugee: Refugee(doc["name"]), refugeeid: doc.id),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    //passing refugee name and id along...
+                    builder: (context) => DetailScreen(
+                        refugee: Refugee(doc["name"]), refugeeid: doc.id),
                   ),
                 );
               },
             ),
           );
-          }
-        );
+        });
   }
 }
