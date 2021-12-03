@@ -82,10 +82,11 @@ class RefugeePage extends StatelessWidget {
     double _points = 0;
     double totalPoints = 0;
 
+    //save name and put default for unfilled fields
     FirebaseFirestore.instance.collection("Refugees").add({
       "name": refugeeName,
       "Points": _points,
-      // "Total Point": totalPoints,
+      
       "Age": "-",
       "weight": "-",
       "Gender": "-",

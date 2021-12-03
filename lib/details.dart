@@ -118,13 +118,12 @@ class DetailScreen extends StatelessWidget {
                 var refWt = output['weight'];
                 var refGender = output['Gender'];
                 var refContrib = output['Contribution'];
-                // points here are gotten
+                // read personal and total camp points
                 double refPoints = output['Points'];
                 double totalCampPoints = output['Total Point'];
 
                 //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
-
                 double percent = refPoints * 100 / totalCampPoints;
 
                 //displaying read and calculated data
@@ -142,6 +141,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
+  //calculate and save camp total points function
   void addPoints() async {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection("Refugees").get();
@@ -197,6 +197,7 @@ class DetailScreen extends StatelessWidget {
     _controller3.clear();
     _controller4.clear();
 
+    // calculate and save total camp points
     addPoints();
   }
 }
