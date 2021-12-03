@@ -79,10 +79,17 @@ class RefugeePage extends StatelessWidget {
   //save name function called at button click to save refugee name
   void _saveTask() {
     final refugeeName = _controller.text;
+    double _points = 0;
+    double totalPoints = 0;
 
     FirebaseFirestore.instance.collection("Refugees").add({
       "name": refugeeName,
-      // "uid": ,
+      "Points": _points,
+      // "Total Point": totalPoints,
+      "Age": "-",
+      "weight": "-",
+      "Gender": "-",
+      "Contribution": "-",
     });
 
     _controller.clear();

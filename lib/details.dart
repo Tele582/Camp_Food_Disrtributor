@@ -1,9 +1,8 @@
-// import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_distributor/refugees.dart';
 
+// ignore: must_be_immutable
 class DetailScreen extends StatelessWidget {
   // In the constructor, require a Refugee.
   DetailScreen({
@@ -20,6 +19,7 @@ class DetailScreen extends StatelessWidget {
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
   final _controller4 = TextEditingController();
+  double totalCampPoints = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -118,27 +118,23 @@ class DetailScreen extends StatelessWidget {
                 var refWt = output['weight'];
                 var refGender = output['Gender'];
                 var refContrib = output['Contribution'];
-                var refPoints = output['Points'];
-
-                //total Points initialized
-                // double totalCampPoints = 0;
-
-                // where i hopefully, intend to add all points to get totalCampPpoints
-
-                var totalCampPoints = 0;
+                // points here are gotten
+                double refPoints = output['Points'];
+                double totalCampPoints = output['Total Point'];
 
                 //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
 
-                var percent = refPoints / totalCampPoints;
+                double percent = refPoints * 100 / totalCampPoints;
 
                 //displaying read and calculated data
                 return Text(
                     " Age = $refAge years \n Weight = $refWt kg \n Gender = $refGender \n Camp Contribution = $refContrib"
-                    "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get $percent% of total camp's FOOD.");
+                    "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD.");
               }
-
-              return const Center(child: CircularProgressIndicator());
+              return const Text("Waiting for updates.."
+                  // child: CircularProgressIndicator()
+                  );
             },
           )
         ]),
@@ -146,7 +142,19 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  
+  void addPoints() async {
+    final QuerySnapshot result =
+        await FirebaseFirestore.instance.collection("Refugees").get();
+    double total = 0.0;
+    final List<DocumentSnapshot> documents = result.docs;
+    for (var data in documents) {
+      var map = data.data() as Map;
+      total = total + map['Points'];
+    }
+    FirebaseFirestore.instance.collection("Refugees").doc(refugeeid).update({
+      "Total Point": total,
+    });
+  }
 
   // function to save refugee details
   void _saveRest() {
@@ -159,12 +167,12 @@ class DetailScreen extends StatelessWidget {
     double points = 0;
     if (double.parse(refugeeAge) > 15) {
       points += 10;
-    } else {
+    } else if (double.parse(refugeeAge) <= 15) {
       points += 5;
     }
     if (double.parse(refugeeWeight) > 45) {
       points += 15;
-    } else {
+    } else if (double.parse(refugeeWeight) <= 45) {
       points += 10;
     }
     if (refugeeGender.toLowerCase().startsWith("f")) {
@@ -188,5 +196,7 @@ class DetailScreen extends StatelessWidget {
     _controller2.clear();
     _controller3.clear();
     _controller4.clear();
+
+    addPoints();
   }
 }
