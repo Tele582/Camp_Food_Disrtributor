@@ -86,7 +86,7 @@ class RefugeePage extends StatelessWidget {
     FirebaseFirestore.instance.collection("Refugees").add({
       "name": refugeeName,
       "Points": _points,
-      
+      "Total Point": totalPoints,
       "Age": "-",
       "weight": "-",
       "Gender": "-",
