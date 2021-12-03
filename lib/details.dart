@@ -20,6 +20,7 @@ class DetailScreen extends StatelessWidget {
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
   final _controller4 = TextEditingController();
+  double totalCampPoints = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -119,15 +120,12 @@ class DetailScreen extends StatelessWidget {
                 var refGender = output['Gender'];
                 var refContrib = output['Contribution'];
                 // points here are gotte
-                var refPoints = output['Points'];
-
-                //total Points initialized
-                double totalCampPoints = 0;
+                double refPoints = output['Points'];
+                double totalCampPoints = output['Total Point'];
 
                 // where i hopefully, intend to add all points to get totalCampPpoints
                 //..
                 //...
-                addPoints();
 
                 //calculate percentage of food to be received by refugee
                 //using personal points divided by total Points..
@@ -137,9 +135,8 @@ class DetailScreen extends StatelessWidget {
                 //displaying read and calculated data
                 return Text(
                     " Age = $refAge years \n Weight = $refWt kg \n Gender = $refGender \n Camp Contribution = $refContrib"
-                    "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get $percent% of total camp's FOOD.");
+                    "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD.");
               }
-
               return const Center(child: CircularProgressIndicator());
             },
           )
@@ -148,7 +145,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Future<double> addPoints() async {
+  void addPoints() async {
     final QuerySnapshot result =
         await FirebaseFirestore.instance.collection("Refugees").get();
     double total = 0.0;
@@ -157,8 +154,9 @@ class DetailScreen extends StatelessWidget {
       var map = data.data() as Map;
       total = total + map['Points'];
     }
-    print(total);
-    return total;
+    FirebaseFirestore.instance.collection("Refugees").doc(refugeeid).update({
+      "Total Point": total,
+    });
   }
 
   // function to save refugee details
