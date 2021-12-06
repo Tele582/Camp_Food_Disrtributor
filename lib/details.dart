@@ -113,6 +113,7 @@ class DetailScreen extends StatelessWidget {
               if (snapshot.hasError) return Text('Error = ${snapshot.error}');
               // data read
               if (snapshot.hasData) {
+                addPoints();
                 var output = snapshot.data!.data();
                 var refAge = output!['Age'];
                 var refWt = output['weight'];
