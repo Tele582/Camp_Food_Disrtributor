@@ -31,113 +31,115 @@ class DetailScreen extends StatelessWidget {
         title: Text(refugee.name),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
-          //input refugee age
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration(hintText: "Age (Years)"),
+        padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+        child: SafeArea(
+          child: Column(children: [
+            //input refugee age
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(hintText: "Age (Years)"),
+                ),
+              ),
+            ]),
+            //input refugee weight
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller2,
+                  decoration: const InputDecoration(hintText: "Weight (kg)"),
+                ),
+              ),
+            ]),
+            //input refugee gender
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller3,
+                  decoration: const InputDecoration(hintText: "Gender (M/F)"),
+                ),
+              ),
+            ]),
+            //input refugee conribution
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller4,
+                  decoration: const InputDecoration(hintText: "Contribution"),
+                ),
+              ),
+            ]),
+            //save other added refugee details
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                onPressed: () {
+                  _saveRest();
+                },
+                child: const Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ), // color: Colors.blue,
               ),
             ),
-          ]),
-          //input refugee weight
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _controller2,
-                decoration: const InputDecoration(hintText: "Weight (kg)"),
-              ),
-            ),
-          ]),
-          //input refugee gender
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _controller3,
-                decoration: const InputDecoration(hintText: "Gender (M/F)"),
-              ),
-            ),
-          ]),
-          //input refugee conribution
-          Row(children: [
-            Expanded(
-              child: TextField(
-                controller: _controller4,
-                decoration: const InputDecoration(hintText: "Contribution"),
-              ),
-            ),
-          ]),
-          //save other added refugee details
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              onPressed: () {
-                _saveRest();
+
+            // // i used this to test the function.
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextButton(
+            //     onPressed: () {
+            //       addPoints();
+            //     },
+            //     child: const Text(
+            //       "Testing",
+            //       style: TextStyle(color: Colors.white),
+            //     ),
+            //     style: TextButton.styleFrom(
+            //       backgroundColor: Colors.blue,
+            //     ), // color: Colors.blue,
+            //   ),
+            // ),
+
+            // reading other refugee data fields from firestore (database)
+            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection("Refugees")
+                  .doc(refugeeid)
+                  .snapshots(),
+              builder: (_, snapshot) {
+                if (snapshot.hasError) return Text('Error = ${snapshot.error}');
+                // data read
+                if (snapshot.hasData) {
+                  addPoints();
+                  var output = snapshot.data!.data();
+                  var refAge = output!['Age'];
+                  var refWt = output['weight'];
+                  var refGender = output['Gender'];
+                  var refContrib = output['Contribution'];
+                  // read personal and total camp points
+                  double refPoints = output['Points'];
+                  double totalCampPoints = output['Total Point'];
+
+                  //calculate percentage of food to be received by refugee
+                  //using personal points divided by total Points..
+                  double percent = refPoints * 100 / totalCampPoints;
+
+                  //displaying read and calculated data
+                  return Text(
+                      " Age = $refAge years \n Weight = $refWt kg \n Gender = $refGender \n Camp Contribution = $refContrib"
+                      "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD.");
+                }
+                return const Text("Waiting for updates.."
+                    // child: CircularProgressIndicator()
+                    );
               },
-              child: const Text(
-                "Save",
-                style: TextStyle(color: Colors.white),
-              ),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-              ), // color: Colors.blue,
-            ),
-          ),
-
-          // // i used this to test the function.
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: TextButton(
-          //     onPressed: () {
-          //       addPoints();
-          //     },
-          //     child: const Text(
-          //       "Testing",
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //     style: TextButton.styleFrom(
-          //       backgroundColor: Colors.blue,
-          //     ), // color: Colors.blue,
-          //   ),
-          // ),
-
-          // reading other refugee data fields from firestore (database)
-          StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            stream: FirebaseFirestore.instance
-                .collection("Refugees")
-                .doc(refugeeid)
-                .snapshots(),
-            builder: (_, snapshot) {
-              if (snapshot.hasError) return Text('Error = ${snapshot.error}');
-              // data read
-              if (snapshot.hasData) {
-                addPoints();
-                var output = snapshot.data!.data();
-                var refAge = output!['Age'];
-                var refWt = output['weight'];
-                var refGender = output['Gender'];
-                var refContrib = output['Contribution'];
-                // read personal and total camp points
-                double refPoints = output['Points'];
-                double totalCampPoints = output['Total Point'];
-
-                //calculate percentage of food to be received by refugee
-                //using personal points divided by total Points..
-                double percent = refPoints * 100 / totalCampPoints;
-
-                //displaying read and calculated data
-                return Text(
-                    " Age = $refAge years \n Weight = $refWt kg \n Gender = $refGender \n Camp Contribution = $refContrib"
-                    "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD.");
-              }
-              return const Text("Waiting for updates.."
-                  // child: CircularProgressIndicator()
-                  );
-            },
-          )
-        ]),
+            )
+          ]),
+        ),
       ),
     );
   }
@@ -164,41 +166,46 @@ class DetailScreen extends StatelessWidget {
     final refugeeGender = _controller3.text;
     final refugeeContib = _controller4.text;
 
-    // assign points based on input data
-    double points = 0;
-    if (double.parse(refugeeAge) > 15) {
-      points += 10;
-    } else if (double.parse(refugeeAge) <= 15) {
-      points += 5;
+    if (refugeeAge != "" &&
+        refugeeWeight != "" &&
+        refugeeGender != "" &&
+        refugeeContib != "") {
+      // assign points based on input data
+      double points = 0;
+      if (double.parse(refugeeAge) > 15) {
+        points += 10;
+      } else if (double.parse(refugeeAge) <= 15) {
+        points += 5;
+      }
+      if (double.parse(refugeeWeight) > 45) {
+        points += 15;
+      } else if (double.parse(refugeeWeight) <= 45) {
+        points += 10;
+      }
+      if (refugeeGender.toLowerCase().startsWith("f")) {
+        points += 10;
+      } else if (refugeeGender.toLowerCase().startsWith("m")) {
+        points += 12.5;
+      }
+
+      // total number of points per person (to be stored after)
+      double finalPoints = points;
+
+      FirebaseFirestore.instance.collection("Refugees").doc(refugeeid).update({
+        "Age": refugeeAge,
+        "weight": refugeeWeight,
+        "Gender": refugeeGender,
+        "Contribution": refugeeContib,
+        "Points": finalPoints,
+      });
+
+      _controller.clear();
+      _controller2.clear();
+      _controller3.clear();
+      _controller4.clear();
+
+      // calculate and save total camp points
+      addPoints();
     }
-    if (double.parse(refugeeWeight) > 45) {
-      points += 15;
-    } else if (double.parse(refugeeWeight) <= 45) {
-      points += 10;
-    }
-    if (refugeeGender.toLowerCase().startsWith("f")) {
-      points += 10;
-    } else if (refugeeGender.toLowerCase().startsWith("m")) {
-      points += 12.5;
-    }
-
-    // total number of points per person (to be stored after)
-    double finalPoints = points;
-
-    FirebaseFirestore.instance.collection("Refugees").doc(refugeeid).update({
-      "Age": refugeeAge,
-      "weight": refugeeWeight,
-      "Gender": refugeeGender,
-      "Contribution": refugeeContib,
-      "Points": finalPoints,
-    });
-
-    _controller.clear();
-    _controller2.clear();
-    _controller3.clear();
-    _controller4.clear();
-
-    // calculate and save total camp points
-    addPoints();
   }
 }
