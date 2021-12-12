@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_distributor/refugees.dart';
@@ -19,6 +21,7 @@ class DetailScreen extends StatelessWidget {
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
   final _controller4 = TextEditingController();
+  final _controller5 = TextEditingController();
   double totalCampPoints = 0;
 
   @override
@@ -70,6 +73,15 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
             ]),
+            //input refugee address
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller5,
+                  decoration: const InputDecoration(hintText: "Address (Text)"),
+                ),
+              ),
+            ]),
             //save other added refugee details
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -87,23 +99,6 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
 
-            // // i used this to test the function.
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: TextButton(
-            //     onPressed: () {
-            //       addPoints();
-            //     },
-            //     child: const Text(
-            //       "Testing",
-            //       style: TextStyle(color: Colors.white),
-            //     ),
-            //     style: TextButton.styleFrom(
-            //       backgroundColor: Colors.blue,
-            //     ), // color: Colors.blue,
-            //   ),
-            // ),
-
             // reading other refugee data fields from firestore (database)
             StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
@@ -120,6 +115,7 @@ class DetailScreen extends StatelessWidget {
                   var refWt = output['weight'];
                   var refGender = output['Gender'];
                   var refContrib = output['Contribution'];
+                  var refAddress = output['Address'];
                   // read personal and total camp points
                   double refPoints = output['Points'];
                   double totalCampPoints = output['Total Point'];
@@ -127,20 +123,39 @@ class DetailScreen extends StatelessWidget {
                   //calculate percentage of food to be received by refugee
                   //using personal points divided by total Points..
                   double percent = refPoints * 100 / totalCampPoints;
+                  double assumedFoodWeight = 1700.00; //assumed total weight
+
+                  double individualFoodWeight =
+                      percent * assumedFoodWeight / 100;
 
                   //displaying read and calculated data
                   return Text(
-                      " Age = $refAge years \n Weight = $refWt kg \n Gender = $refGender \n Camp Contribution = $refContrib"
-                      "\n\n Your Points: $refPoints \n\n [Total Camp Points: $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD.");
+                    " Age =   $refAge years \n Weight =   $refWt kg \n Gender =   $refGender \n Camp Contribution =   $refContrib"
+                    "\n Stays at:   $refAddress . . \n\n Your Points:   $refPoints\n\n"
+                    " [Total Camp Points:   $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD."
+                    "\n\n Assuming total current camp food is $assumedFoodWeight kg,\n you get ${individualFoodWeight.toStringAsPrecision(6)} kg.",
+                    style: const TextStyle(fontSize: 16),
+                  );
                 }
                 return const Text("Waiting for updates.."
                     // child: CircularProgressIndicator()
                     );
               },
-            )
+            ),
+
+            // Center(
+            //   child: buildTime(),
+            // ),
           ]),
         ),
       ),
+    );
+  }
+
+  Widget buildTime() {
+    return Text(
+      refugee.name,
+      style: const TextStyle(fontSize: 60),
     );
   }
 
@@ -165,10 +180,12 @@ class DetailScreen extends StatelessWidget {
     final refugeeWeight = _controller2.text;
     final refugeeGender = _controller3.text;
     final refugeeContib = _controller4.text;
+    final refugeeAddress = _controller5.text;
 
     if (refugeeAge != "" &&
         refugeeWeight != "" &&
         refugeeGender != "" &&
+        refugeeAddress != "" &&
         refugeeContib != "") {
       // assign points based on input data
       double points = 0;
@@ -193,6 +210,7 @@ class DetailScreen extends StatelessWidget {
 
       FirebaseFirestore.instance.collection("Refugees").doc(refugeeid).update({
         "Age": refugeeAge,
+        "Address": refugeeAddress,
         "weight": refugeeWeight,
         "Gender": refugeeGender,
         "Contribution": refugeeContib,
@@ -203,6 +221,7 @@ class DetailScreen extends StatelessWidget {
       _controller2.clear();
       _controller3.clear();
       _controller4.clear();
+      _controller5.clear();
 
       // calculate and save total camp points
       addPoints();
