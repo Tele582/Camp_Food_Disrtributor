@@ -34,7 +34,10 @@ class DetailScreen extends StatelessWidget {
         title: Text(refugee.name),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+        padding: const EdgeInsets.only(
+          left: 8.0,
+          right: 4.0,
+        ),
         child: SafeArea(
           child: Column(children: [
             //input refugee age
@@ -78,7 +81,7 @@ class DetailScreen extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: _controller5,
-                  decoration: const InputDecoration(hintText: "Address (Text)"),
+                  decoration: const InputDecoration(hintText: "Address (Tent)"),
                 ),
               ),
             ]),
@@ -123,7 +126,7 @@ class DetailScreen extends StatelessWidget {
                   //calculate percentage of food to be received by refugee
                   //using personal points divided by total Points..
                   double percent = refPoints * 100 / totalCampPoints;
-                  double assumedFoodWeight = 1700.00; //assumed total weight
+                  double assumedFoodWeight = 9000.00; //assumed total weight
 
                   double individualFoodWeight =
                       percent * assumedFoodWeight / 100;
@@ -133,7 +136,7 @@ class DetailScreen extends StatelessWidget {
                     " Age =   $refAge years \n Weight =   $refWt kg \n Gender =   $refGender \n Camp Contribution =   $refContrib"
                     "\n Stays at:   $refAddress . . \n\n Your Points:   $refPoints\n\n"
                     " [Total Camp Points:   $totalCampPoints] \n\n You get ${percent.toStringAsPrecision(3)}% of total camp's FOOD."
-                    "\n\n Assuming total current camp food is $assumedFoodWeight kg,\n you get ${individualFoodWeight.toStringAsPrecision(6)} kg.",
+                    "\n\n Assuming total current camp food is $assumedFoodWeight cal,\n you get ${individualFoodWeight.toStringAsPrecision(6)} cal.",
                     style: const TextStyle(fontSize: 16),
                   );
                 }
@@ -189,14 +192,14 @@ class DetailScreen extends StatelessWidget {
         refugeeContib != "") {
       // assign points based on input data
       double points = 0;
-      if (double.parse(refugeeAge) > 15) {
+      if (double.parse(refugeeAge) > 60) {
+        points += 11.5;
+      } else if (double.parse(refugeeAge) <= 60) {
         points += 10;
-      } else if (double.parse(refugeeAge) <= 15) {
-        points += 5;
       }
-      if (double.parse(refugeeWeight) > 45) {
-        points += 15;
-      } else if (double.parse(refugeeWeight) <= 45) {
+      if (double.parse(refugeeWeight) > 70) {
+        points += 11;
+      } else if (double.parse(refugeeWeight) <= 70) {
         points += 10;
       }
       if (refugeeGender.toLowerCase().startsWith("f")) {
