@@ -14,6 +14,8 @@ class _CountdownPageState extends State<CountdownPage> {
   Duration duration = const Duration();
   Timer? timer;
 
+  final _controller = TextEditingController();
+
   bool isCountDown = true;
 
   @override
@@ -78,15 +80,36 @@ class _CountdownPageState extends State<CountdownPage> {
             "You get your food in less than",
             style: TextStyle(color: Colors.white, fontSize: 22),
           ),
+          
         ),
         buildTime(),
         const SizedBox(
           height: 80,
         ),
         buildButtons(),
+        
+        // Expanded(
+        //   child: TextField(
+        //     controller: _controller,
+        //     decoration: const InputDecoration(hintText: "Camp Updates"),
+        //   ),
+        // ),
+        // campUpdates(),
       ]),
     );
   }
+
+  // campUpdates() {
+    
+  //       final campUpdate = _controller.text;
+  //       const Padding(
+  //         padding: EdgeInsets.all(8.0),
+  //         child: Text(
+  //           "campUpdate",
+  //           // style: TextStyle(color: Colors.white, fontSize: 22),
+  //         ),
+  //       );
+  // }
 
   Widget buildTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
